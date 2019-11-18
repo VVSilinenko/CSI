@@ -19,9 +19,9 @@ class CheckSenderSubjectContentTest extends TestSettings {
         AuthorizationPage authPage = new AuthorizationPage(driver, logger);
         HomePage homePage = new HomePage(driver,logger);
 
-        String textOfMail = "Очень важно!!!";
-        String senderOfMail = "Vitaliy Silinenko";
-        String subjectOfMail = "Письмо с телефона";
+        String textOfMail = "Test";
+        String senderOfMail = "Виталий Силиненко";
+        String subjectOfMail = "For test";
 
         authPage.successAuth(login, passwd).showLetterBySender("Виталий Силиненко");
 

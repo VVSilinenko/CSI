@@ -59,7 +59,7 @@ public class AuthorizationPage {
             passwdField.sendKeys(passwd);
             enterPasswd.click();
             writeLetter.isEnabled();
-            logger.info("Авторизация пользователя успешна");
+            logger.info("Авторизация пользователя выполнена");
         } catch (WebDriverException ex) {
             if (isEnabled(errorMessage)){
                 logger.log(Level.WARNING, "Ошибка при авторизации. " + errorMessage.getText());
