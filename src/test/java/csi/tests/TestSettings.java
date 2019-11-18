@@ -1,7 +1,6 @@
 package csi.tests;
 
 import csi.tests.pages.AuthorizationPage;
-import csi.tests.pages.MainPage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
@@ -14,7 +13,7 @@ import java.util.logging.Logger;
 
 class TestSettings {
 
-    private static Logger logger;
+    protected static Logger logger;
     static {
         try (FileInputStream ins = new FileInputStream("log.config")) {
             LogManager.getLogManager().readConfiguration(ins);
@@ -24,16 +23,14 @@ class TestSettings {
         }
     }
 
-    private WebDriver driver = new ChromeDriver();
-    AuthorizationPage authorizationPage = new AuthorizationPage(driver, logger);
-    MainPage mainPage = new MainPage(driver, logger);
+    protected WebDriver driver = new ChromeDriver();
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         driver.manage().window().maximize();
         driver.get(ConstValuesForTest.URL);
-        authorizationPage.checkURL(ConstValuesForTest.URL);
+        new AuthorizationPage(driver,logger).checkURL(ConstValuesForTest.URL);
     }
 
     @AfterEach

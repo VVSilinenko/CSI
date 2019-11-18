@@ -1,6 +1,7 @@
 package csi.tests.pages;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.logging.Level;
@@ -18,22 +19,29 @@ public class AuthorizationPage {
     }
 
     // *Войти в почту* на странице yandex.ru
-    private By enterToMail = By.xpath("/html/body/div[1]/div[1]/div/div[1]/div/a[1]");
+    @FindBy (xpath = "/html/body/div[1]/div[1]/div/div[1]/div/a[1]")
+    private WebElement enterToMail;
     // Поле для ввода логина
-    private By loginField = By.name("login");
+    @FindBy (name = "login")
+    private WebElement loginField;
     // Кнопка "Войти" на форме ввода логина
-    private By enterLogin = By.xpath("//*[@id=\"root\"]/div/div/div[2]/div/div/div[3]/div[2]/div/div/div[1]/form/div[3]/button[1]");
+    @FindBy (xpath = "//*[@id=\"root\"]/div/div/div[2]/div/div/div[3]/div[2]/div/div/div[1]/form/div[3]/button[1]")
+    private WebElement enterLogin;
     // Пароль
-    private By passwdField = By.name("passwd");
+    @FindBy (name = "passwd")
+    private WebElement passwdField;
     // Кнопка "Войти" на форме ввода пароля
-    private By enterPasswd = By.xpath("//*[@id=\"root\"]/div/div/div[2]/div/div/div[3]/div[2]/div/div[1]/form/div[2]/button[1]");
+    @FindBy (xpath = "//*[@id=\"root\"]/div/div/div[2]/div/div/div[3]/div[2]/div/div[1]/form/div[2]/button[1]")
+    private WebElement enterPasswd;
     // Ошибка при некорректных логин/пароль
-    private By errorMessage = By.className("passp-form-field__error");
+    @FindBy (className = "passp-form-field__error")
+    private WebElement errorMessage;
     // Кнопка "Написать"
-    private By writeLetter = By.className("mail-ComposeButton-Text");
+    @FindBy (className = "mail-ComposeButton-Text")
+    private WebElement writeLetter;
 
     // Проверка правильности загруженной страницы по нахождению на ней элемента
-    public void checkURL(String url) throws Exception {
+    public void checkURL(String url) {
         if (!driver.getCurrentUrl().equals(url)){
             logger.info("Страница не загружена.");
             throw new WebDriverException();
@@ -45,16 +53,16 @@ public class AuthorizationPage {
     // Авторизация пользователя
     public void authOnMail(String login, String passwd) {
         try {
-            click(enterToMail);
-            fill(loginField, login);
-            click(enterLogin);
-            fill(passwdField, passwd);
-            click(enterPasswd);
-            driver.findElement(writeLetter).isEnabled();
+            enterToMail.click();
+            loginField.sendKeys(login);
+            enterLogin.click();
+            passwdField.sendKeys(passwd);
+            enterPasswd.click();
+            writeLetter.isEnabled();
             logger.info("Авторизация пользователя успешна");
         } catch (WebDriverException ex) {
             if (isEnabled(errorMessage)){
-                logger.log(Level.WARNING, "Ошибка при авторизации. " + driver.findElement(errorMessage).getText());
+                logger.log(Level.WARNING, "Ошибка при авторизации. " + errorMessage.getText());
             } else {
                 logger.log(Level.WARNING, "Ошибка при авторизации.");
             }
@@ -62,31 +70,17 @@ public class AuthorizationPage {
         }
     }
 
-    private void click(By by) {
+    private boolean isEnabled(WebElement webElement){
         try {
-            driver.findElement(by).click();
-        } catch (WebDriverException ex) {
-            logger.severe("Неверный локатор элемента \"" + by.toString() + "\"");
-            throw new WebDriverException();
-        }
-    }
-
-    private void fill(By by, String text){
-        try {
-            driver.findElement(by).clear();
-            driver.findElement(by).sendKeys(text);
-        } catch (WebDriverException ex) {
-            logger.severe("Неверный локатор элемента \"" + by.toString() + "\"");
-            throw new WebDriverException();
-        }
-    }
-
-    private boolean isEnabled(By by){
-        try {
-            driver.findElement(by);
+            webElement.isEnabled();
             return true;
         } catch (WebDriverException ex){
             return false;
         }
+    }
+
+    public HomePage successAuth(String login, String passwd){
+        authOnMail(login,passwd);
+        return new HomePage(driver,logger);
     }
 }
