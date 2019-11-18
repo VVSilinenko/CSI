@@ -4,11 +4,11 @@ import csi.tests.MyExceptions.NoLetterException;
 import csi.tests.MyExceptions.NoSenderException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 public class MainPage {
@@ -34,22 +34,14 @@ public class MainPage {
     private By textOfMail = By.className("mail-Message-Body-Content");
     // Настройки пользователя
     private By userName = By.id("recipient-1");
-    // Форма с настройками пользователя
-    private By userSettingsForm = By.className("b-user-dropdown-content b-user-dropdown-content-with-exit");
     // Элементы в форме с настройками пользователя
     private By userSettingsElements = By.className("b-mail-dropdown__item");
     // Сообщение, если нет писем в папке "Входящие"
     private By noLettersMessage = By.className("b-messages__placeholder-item");
 
-    // Количество писем
-    public int getCountOfLetters() {
-        int count = driver.findElements(letters).size();
-        logger.info("Всего писем: " + count);
-        return count;
-    }
-
     // Выбор письма по имени Отправителя
     public void showLetterBySender(String senderName) throws NoSenderException, NoLetterException {
+        driver.findElement(inbox).click();
         if (isEnabled(letters)) {
             List<WebElement> lettersList = driver.findElements(letters);
             int countOfLetters = lettersList.size();
@@ -88,42 +80,34 @@ public class MainPage {
                 throw new NoLetterException();
             } else {
                 logger.severe("Неверный локатор элемента");
-                throw new NoSuchElementException();
+                throw new WebDriverException();
             }
         }
-    }
-
-    // Нажатие на выбранный элемент в настройках пользователя
-    public void clickElementByText(String elementText) {
-        driver.findElement(userName).click();
-        for (WebElement element : driver.findElements(userSettingsElements)) {
-            if (element.getText().equals(elementText)) {
-                element.click();
-                return;
-            }
-        }
-        logger.info("Данного элемента \"" + elementText + "\" ну существует");
     }
 
     // Выход из почты
     public void exitFromMail() {
-        driver.findElement(userName).click();
-        for (WebElement element : driver.findElements(userSettingsElements)) {
-            if (element.getText().equals("Выйти из сервисов Яндекса")) {
-                element.click();
-                logger.info("Выход пользователя выполнен");
-                return;
+        if (isEnabled(userName)) {
+            driver.findElement(userName).click();
+            for (WebElement element : driver.findElements(userSettingsElements)) {
+                if (element.getText().equals("Выйти из сервисов Яндекса")) {
+                    element.click();
+                    logger.info("Выход пользователя выполнен");
+                    return;
+                }
             }
+        } else {
+            logger.info("Ошибка при выходе. Неверный локатор элемента");
+            throw new WebDriverException();
         }
-        logger.info("Ошибка при выходе");
-    }
 
+    }
 
     private boolean isEnabled(By by) {
         try {
             driver.findElement(by);
             return true;
-        } catch (Exception ex) {
+        } catch (WebDriverException ex) {
             return false;
         }
     }

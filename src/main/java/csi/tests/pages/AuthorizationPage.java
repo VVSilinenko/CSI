@@ -19,10 +19,6 @@ public class AuthorizationPage {
 
     // *Войти в почту* на странице yandex.ru
     private By enterToMail = By.xpath("/html/body/div[1]/div[1]/div/div[1]/div/a[1]");
-    // Логотип
-    private By logo = By.className("Logo");
-    // Форма для ввода УЗ
-    private By authForm = By.className("passp-page-overlay");
     // Поле для ввода логина
     private By loginField = By.name("login");
     // Кнопка "Войти" на форме ввода логина
@@ -40,7 +36,7 @@ public class AuthorizationPage {
     public void checkURL(String url) throws Exception {
         if (!driver.getCurrentUrl().equals(url)){
             logger.info("Страница не загружена.");
-            throw new Exception();
+            throw new WebDriverException();
         } else {
             logger.info("Страница \"" + url + "\" загружена");
         }
@@ -56,22 +52,22 @@ public class AuthorizationPage {
             click(enterPasswd);
             driver.findElement(writeLetter).isEnabled();
             logger.info("Авторизация пользователя успешна");
-        } catch (NoSuchElementException ex) {
+        } catch (WebDriverException ex) {
             if (isEnabled(errorMessage)){
                 logger.log(Level.WARNING, "Ошибка при авторизации. " + driver.findElement(errorMessage).getText());
             } else {
                 logger.log(Level.WARNING, "Ошибка при авторизации.");
             }
-            throw new java.util.NoSuchElementException();
+            throw new WebDriverException();
         }
     }
 
     private void click(By by) {
         try {
             driver.findElement(by).click();
-        } catch (NoSuchElementException ex) {
+        } catch (WebDriverException ex) {
             logger.severe("Неверный локатор элемента \"" + by.toString() + "\"");
-            throw new java.util.NoSuchElementException();
+            throw new WebDriverException();
         }
     }
 
@@ -79,9 +75,9 @@ public class AuthorizationPage {
         try {
             driver.findElement(by).clear();
             driver.findElement(by).sendKeys(text);
-        } catch (NoSuchElementException ex) {
+        } catch (WebDriverException ex) {
             logger.severe("Неверный локатор элемента \"" + by.toString() + "\"");
-            throw new java.util.NoSuchElementException();
+            throw new WebDriverException();
         }
     }
 
@@ -89,7 +85,7 @@ public class AuthorizationPage {
         try {
             driver.findElement(by);
             return true;
-        } catch (Exception ex){
+        } catch (WebDriverException ex){
             return false;
         }
     }

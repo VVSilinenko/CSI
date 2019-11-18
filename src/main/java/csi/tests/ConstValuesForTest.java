@@ -1,6 +1,6 @@
 package csi.tests;
 
-public class ConfigForTest {
+public class ConstValuesForTest {
 
     protected static final String URL = "https://yandex.ru/";
     protected static final String login = "tester.csi";

@@ -12,13 +12,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-class TestsSettings {
+class TestSettings {
 
     private static Logger logger;
     static {
         try (FileInputStream ins = new FileInputStream("log.config")) {
             LogManager.getLogManager().readConfiguration(ins);
-            logger = Logger.getLogger(TestsSettings.class.getName());
+            logger = Logger.getLogger(TestSettings.class.getName());
         } catch (Exception ignore) {
             ignore.printStackTrace();
         }
@@ -32,8 +32,8 @@ class TestsSettings {
     void setUp() throws Exception {
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         driver.manage().window().maximize();
-        driver.get(ConfigForTest.URL);
-        authorizationPage.checkURL(ConfigForTest.URL);
+        driver.get(ConstValuesForTest.URL);
+        authorizationPage.checkURL(ConstValuesForTest.URL);
     }
 
     @AfterEach
