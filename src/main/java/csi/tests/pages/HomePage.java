@@ -15,12 +15,6 @@ public class HomePage {
     private WebDriver driver;
     private Logger logger;
 
-    public HomePage(WebDriver driver, Logger logger) {
-        PageFactory.initElements(driver, this);
-        this.logger = logger;
-        this.driver = driver;
-    }
-
     // Входящие
     @FindBy(xpath = "//*[@id=\"nb-1\"]/body/div[2]/div[5]/div/div[3]/div[2]/div[3]/div/div[1]/div[1]/a[1]")
     private WebElement inbox;
@@ -45,6 +39,12 @@ public class HomePage {
     // Сообщение, если нет писем в папке "Входящие"
     @FindBy(className = "b-messages__placeholder-item")
     private WebElement noLettersMessage;
+
+    public HomePage(WebDriver driver, Logger logger) {
+        PageFactory.initElements(driver, this);
+        this.logger = logger;
+        this.driver = driver;
+    }
 
     // Выбор письма по имени Отправителя
     public void showLetterBySender(String senderName) throws NoSenderException, NoLetterException {

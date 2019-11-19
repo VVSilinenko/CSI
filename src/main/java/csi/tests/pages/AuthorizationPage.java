@@ -13,12 +13,6 @@ public class AuthorizationPage {
     private WebDriver driver;
     private Logger logger;
 
-    public AuthorizationPage(WebDriver driver, Logger logger) {
-        PageFactory.initElements(driver, this);
-        this.driver = driver;
-        this.logger = logger;
-    }
-
     // *Войти в почту* на странице yandex.ru
     @FindBy (xpath = "/html/body/div[1]/div[1]/div/div[1]/div/a[1]")
     private WebElement enterToMail;
@@ -40,6 +34,12 @@ public class AuthorizationPage {
     // Кнопка "Написать"
     @FindBy (className = "mail-ComposeButton-Text")
     private WebElement writeLetter;
+
+    public AuthorizationPage(WebDriver driver, Logger logger) {
+        PageFactory.initElements(driver, this);
+        this.driver = driver;
+        this.logger = logger;
+    }
 
     // Авторизация пользователя
     private void authOnMail(String login, String passwd) throws AuthException {
@@ -66,7 +66,7 @@ public class AuthorizationPage {
         try {
             webElement.isEnabled();
             return true;
-        } catch (WebDriverException ex){
+        } catch (NoSuchElementException ex){
             return false;
         }
     }
