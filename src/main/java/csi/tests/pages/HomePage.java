@@ -69,7 +69,6 @@ public class HomePage {
             if (letter.findElement(By.className("mail-MessageSnippet-FromText")).getText().equals(senderName)) {
                 logger.info("Всего писем от пользователя с именем \"" + senderName + "\" - " + countOfLetters);
                 letter.findElement(By.className("mail-MessageSnippet-Wrapper")).click();
-                return;
             } else {
                 logger.severe("Письмо от отправителя с именем \"" + senderName + "\" не найдено");
                 throw new NoSenderException();
@@ -89,12 +88,10 @@ public class HomePage {
             } else if (countOfLetterFromOneSender == 1){
                 logger.info("Всего писем от пользователя с именем \"" + senderName + "\" - " + countOfLetterFromOneSender);
                 lettersFromSender.get(0).findElement(By.className("mail-MessageSnippet-Wrapper")).click();
-                return;
             } else {
                 logger.info("Всего писем от пользователя с именем \"" + senderName + "\" - " + countOfLetterFromOneSender);
                 logger.info("Для проверки будет использоваться первое письмо в списке");
                 lettersFromSender.get(0).click();
-                return;
             }
         }
     }

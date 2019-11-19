@@ -4,6 +4,7 @@ import csi.tests.pages.AuthorizationPage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.FileInputStream;
@@ -13,7 +14,7 @@ import java.util.logging.Logger;
 
 class TestSettings {
 
-    protected static Logger logger;
+    static Logger logger;
     static {
         try (FileInputStream ins = new FileInputStream("log.config")) {
             LogManager.getLogManager().readConfiguration(ins);
@@ -23,18 +24,27 @@ class TestSettings {
         }
     }
 
-    protected WebDriver driver = new ChromeDriver();
+    static WebDriver driver = new ChromeDriver();
 
     @BeforeEach
     void setUp() {
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         driver.manage().window().maximize();
-        driver.get(ConstValuesForTest.URL);
-        new AuthorizationPage(driver,logger).checkURL(ConstValuesForTest.URL);
     }
 
     @AfterEach
     void tearDown() {
         driver.quit();
+    }
+
+    static AuthorizationPage open(String url){
+        driver.get(url);
+        if (!driver.getCurrentUrl().equals(url)){
+            logger.info("Страница не загружена.");
+            throw new WebDriverException();
+        } else {
+            logger.info("Страница \"" + url + "\" загружена");
+            return new AuthorizationPage(driver,logger);
+        }
     }
 }

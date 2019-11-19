@@ -1,5 +1,6 @@
 package csi.tests.pages;
 
+import csi.tests.MyExceptions.AuthException;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -40,18 +41,8 @@ public class AuthorizationPage {
     @FindBy (className = "mail-ComposeButton-Text")
     private WebElement writeLetter;
 
-    // Проверка правильности загруженной страницы по нахождению на ней элемента
-    public void checkURL(String url) {
-        if (!driver.getCurrentUrl().equals(url)){
-            logger.info("Страница не загружена.");
-            throw new WebDriverException();
-        } else {
-            logger.info("Страница \"" + url + "\" загружена");
-        }
-    }
-
     // Авторизация пользователя
-    public void authOnMail(String login, String passwd) {
+    private void authOnMail(String login, String passwd) throws AuthException {
         try {
             enterToMail.click();
             loginField.sendKeys(login);
@@ -63,10 +54,11 @@ public class AuthorizationPage {
         } catch (WebDriverException ex) {
             if (isEnabled(errorMessage)){
                 logger.log(Level.WARNING, "Ошибка при авторизации. " + errorMessage.getText());
+                throw new AuthException();
             } else {
                 logger.log(Level.WARNING, "Ошибка при авторизации.");
+                throw new WebDriverException();
             }
-            throw new WebDriverException();
         }
     }
 
@@ -79,7 +71,7 @@ public class AuthorizationPage {
         }
     }
 
-    public HomePage successAuth(String login, String passwd){
+    public HomePage successAuth(String login, String passwd) throws AuthException {
         authOnMail(login,passwd);
         return new HomePage(driver,logger);
     }
